@@ -9,22 +9,63 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+'''{r load packages,message=FALSE}
+library(sf)
+library(tidyverse)
+library(ggspatial)
+library(ggthemes)
+'''
+```{r}
+nhooods <- st_read("https://bostonopendata-boston.opendata.arcgis.com/datasets/142500a77e2a4dbeb94a86f7e0b568bc_9.kml?outSR=%7B%22latestWkid%22%3A2249%2C%22wkid%22%3A102686%7D", quiet = TRUE)
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+water <- st_read("https://bostonopendata-boston.opendata.arcgis.com/datasets/2b3c0fa13b1c468eb702a3645fcc6bcb_5.kml", quiet = TRUE)
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+parking <- st_read("https://bostonopendata-boston.opendata.arcgis.com/datasets/962da9bb739f440ba33e746661921244_9.kml?outSR=%7B%22latestWkid%22%3A2249%2C%22wkid%22%3A102686%7D", quiet = TRUE)
 
-```{r cars}
-summary(cars)
+trees <- st_read("https://bostonopendata-boston.opendata.arcgis.com/datasets/ce863d38db284efe83555caf8a832e2a_1.kml", quiet = TRUE)
+
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+ggplot(water) +
+  geom_sf(fill = "lightblue",color = NA)+
+  geom_sf(data = trees, color = "darkgreen",size = 0.01) +
+  geom_sf(data = parking, size = 0.01) +
+  geom_sf(data = nhooods, fill = NA, color = "gray")
+```
+  
+```{r}
+gardens <- st_read("Community Gardens.shp.zip")
+playgrounds <- st_read("PlayLocs.geojson")
+historic <- st_read("Historic Districts.kml")
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+playground_plot<-ggplot(playgrounds)+
+  geom_sf() + 
+  geom_sf(data = historic, color = "red",
+                           size = 3,
+                           fill = "blue",
+                           alpha = 0.5) + 
+  geom_sf(data = gardens)
+
+```
+
+```{r write plot to file,message = FALSE}
+jpeg("playgrounds.jpg",width = 5, height = 3, units = "in", res = 300)
+playground_plot
+dev.off()
+
+pdf("playgrounds.pdf",width = 5, height = 3)
+playground_plot
+dev.off()
+
+png("playgrounds.png",width = 5, height = 3, units = "in", res = 300)
+playground_plot
+dev.off()
+```
+```
+
+```{r}
+
+  ```
