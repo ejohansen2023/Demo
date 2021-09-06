@@ -5,16 +5,16 @@ date: "9/5/2021"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-'''{r load packages,message=FALSE}
+```{r load packages,message=FALSE}
 library(sf)
 library(tidyverse)
 library(ggspatial)
 library(ggthemes)
-'''
+```
 ```{r}
 nhooods <- st_read("https://bostonopendata-boston.opendata.arcgis.com/datasets/142500a77e2a4dbeb94a86f7e0b568bc_9.kml?outSR=%7B%22latestWkid%22%3A2249%2C%22wkid%22%3A102686%7D", quiet = TRUE)
 
@@ -24,48 +24,16 @@ parking <- st_read("https://bostonopendata-boston.opendata.arcgis.com/datasets/9
 
 trees <- st_read("https://bostonopendata-boston.opendata.arcgis.com/datasets/ce863d38db284efe83555caf8a832e2a_1.kml", quiet = TRUE)
 
+zipcodes <- st_read("Zip Codes (4) (1).kml")
+
 ```
+#Going to attempt to plot something now
 
 ```{r}
-ggplot(water) +
-  geom_sf(fill = "lightblue",color = NA)+
-  geom_sf(data = trees, color = "darkgreen",size = 0.01) +
-  geom_sf(data = parking, size = 0.01) +
-  geom_sf(data = nhooods, fill = NA, color = "gray")
-```
-  
-```{r}
-gardens <- st_read("Community Gardens.shp.zip")
 playgrounds <- st_read("PlayLocs.geojson")
-historic <- st_read("Historic Districts.kml")
+gardens <- st_read("Community Gardens.shp.zip")
+
+st_layers("HistDist.kml")
+
+historic <- st_read("HistDist.kml")
 ```
-
-```{r}
-playground_plot<-ggplot(playgrounds)+
-  geom_sf() + 
-  geom_sf(data = historic, color = "red",
-                           size = 3,
-                           fill = "blue",
-                           alpha = 0.5) + 
-  geom_sf(data = gardens)
-
-```
-
-```{r write plot to file,message = FALSE}
-jpeg("playgrounds.jpg",width = 5, height = 3, units = "in", res = 300)
-playground_plot
-dev.off()
-
-pdf("playgrounds.pdf",width = 5, height = 3)
-playground_plot
-dev.off()
-
-png("playgrounds.png",width = 5, height = 3, units = "in", res = 300)
-playground_plot
-dev.off()
-```
-```
-
-```{r}
-
-  ```
